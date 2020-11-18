@@ -18,7 +18,7 @@ public class StudentView {
     Label selectCourseLbl = new Label("Select Course");
     Button findStudentBtn = new Button("Find student");
     Button findCourseBtn = new Button("Find course");
-    Button avgGradeStudentBtn = new Button("Average grade student");
+    Button GradeStudentBtn = new Button("See grades for course");
     Button avgGradeCourseBtn = new Button("Average grade course");
     Button exitBtn = new Button("Exit");
 
@@ -46,7 +46,7 @@ public class StudentView {
         StartView.add(selectCourseLbl, 1, 3);
         StartView.add(findStudentBtn, 15, 6);
         StartView.add(findCourseBtn, 16, 6);
-        StartView.add(avgGradeStudentBtn, 17, 6);
+        StartView.add(GradeStudentBtn, 17, 6);
         StartView.add(avgGradeCourseBtn, 18, 6);
         StartView.add(exitBtn, 20, 15);
         StartView.add(poodleText, 1, 7, 20, 7);

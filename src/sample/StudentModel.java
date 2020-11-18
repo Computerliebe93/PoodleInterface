@@ -13,6 +13,8 @@ public class StudentModel {
     PreparedStatement pstmt = null;
     PreparedStatement pstmt2 = null;
     PreparedStatement pstmt3 = null;
+    PreparedStatement pstmt4 = null;
+
 
     String url;
 
@@ -64,7 +66,7 @@ public class StudentModel {
 
 
     public void preparedStmtQuery() {
-        String sql = " SELECT Students.StudentName, Courses FROM Students " +
+        String sql = " SELECT Students.StudentName, City ,Courses FROM Students " +
                  " JOIN Exams as D2 ON Students.StudentName = D2.StudentName " +
                 " WHERE Students.StudentName = ?; ";
 
@@ -74,16 +76,20 @@ public class StudentModel {
                   " JOIN Exams ON course.CourseName = Exams.CourseName1 " +
                     " WHERE course.CourseName = ? ;";
 
-        String sqlGrade = " SELECT Exams.CourseName1, StudentName, Grade FROM Exams " +
+        String sqlGrade = " SELECT Exams.StudentName, CourseName1, Grade FROM Exams " +
                 " JOIN course ON course.CourseName = Exams.CourseName1 " +
                 " WHERE course.CourseName = ? ;";
 
+        String sqlAvgCourseGrade = " SELECT Exams.StudentName, CourseName1, avg(Grade) FROM Exams " +
+                " JOIN course ON course.CourseName = Exams.CourseName1 " +
+                " WHERE course.CourseName = ? ;";
 
 
             try {
                 pstmt = conn.prepareStatement(sql);
                 pstmt2 = conn.prepareStatement(sqlCourse);
                 pstmt3 = conn.prepareStatement(sqlGrade);
+                pstmt4 = conn.prepareStatement(sqlAvgCourseGrade);
             } catch (SQLException e) {
                 e.printStackTrace();
                 System.out.println(e.getMessage());
@@ -91,19 +97,16 @@ public class StudentModel {
             }
         }
 
-    public ArrayList<studentEnrollment> FindStudentData(String name, String course, TextArea poodleText){
+    public ArrayList<studentEnrollment> FindStudentData(String name, String city, TextArea poodleText){
         ArrayList<studentEnrollment> studentdata = new ArrayList<studentEnrollment>();
         try {
             pstmt.setString(1, name);
-           // pstmt.setString(2, course);
-            //pstmt.setString(3, exam);
-            //pstmt.setInt(4, grade);
             ResultSet rs = null;
                  rs = pstmt.executeQuery();
 
             while (rs !=null && rs.next()) {
                 System.out.println(rs.getString(1) + rs.getString(2));
-                studentEnrollment pull = new studentEnrollment(rs.getString(1), rs.getString(2));
+                studentEnrollment pull = new studentEnrollment(rs.getString(1), rs.getString(2), rs.getString(3));
                 studentdata.add(pull);
 
             }
@@ -116,10 +119,12 @@ public class StudentModel {
 
     static class studentEnrollment {
         String studentName;
+        String city;
         String courseName;
 
-        public studentEnrollment(String studentName, String courseName) {
+        public studentEnrollment(String studentName, String city, String courseName) {
             this.studentName = studentName;
+            this.city = city;
             this.courseName = courseName;
 
         }
@@ -129,9 +134,6 @@ public class StudentModel {
         ArrayList<courseData> courseData = new ArrayList<courseData>();
         try {
             pstmt2.setString(1, course);
-            // pstmt.setString(2, course);
-            //pstmt.setString(3, exam);
-            //pstmt.setInt(4, grade);
             ResultSet rs = null;
             rs = pstmt2.executeQuery();
 
@@ -164,9 +166,6 @@ public class StudentModel {
         ArrayList<studentGrade> gradeData = new ArrayList<studentGrade>();
         try {
             pstmt3.setString(1, name);
-            // pstmt.setString(2, course);
-            //pstmt.setString(3, exam);
-            //pstmt.setInt(4, grade);
             ResultSet rs = null;
             rs = pstmt3.executeQuery();
 
@@ -192,6 +191,36 @@ public class StudentModel {
             this.studentName = studentName;
             this.courseName = courseName;
             this.grade = grade;
+
+        }
+    }
+    public ArrayList<avgCourseGrade> FindAvgCourseGrade(String name, TextArea poodleText){
+        ArrayList<avgCourseGrade> avgCourseData = new ArrayList<avgCourseGrade>();
+        try {
+            pstmt4.setString(1, name);
+            ResultSet rs = null;
+            rs = pstmt4.executeQuery();
+
+            while (rs !=null && rs.next()) {
+                System.out.println(rs.getString(1) + rs.getString(2));
+                avgCourseGrade pull = new avgCourseGrade(rs.getString(1), rs.getFloat(2));
+                avgCourseData.add(pull);
+
+            }
+
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return avgCourseData;
+    }
+
+    static class avgCourseGrade {
+        String courseName;
+        float avgGrade;
+
+        public avgCourseGrade(String courseName, float avgGrade) {
+            this.courseName = courseName;
+            this.avgGrade = avgGrade;
 
         }
     }

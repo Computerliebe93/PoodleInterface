@@ -37,11 +37,6 @@ public class Controller {
         return courseNames;
     }
 
-  /*  public ObservableList<String> getExams(){
-        ArrayList<String> exams = model.courseNameQuerystmt();
-        ObservableList<String> grade = FXCollections.observableArrayList(exams);
-        return grade; */
-
 
     public void setView(StudentView view){
         this.view = view;
@@ -59,22 +54,27 @@ public class Controller {
          // Grade select student
         EventHandler<ActionEvent> PrintGradeData = e-> HandlePrintGradeSData(view.selectStudentComB.getValue(),
                 view.selectCourseComb.getValue(),view.poodleText);
-        view.avgGradeStudentBtn.setOnAction(PrintGradeData);
+        view.GradeStudentBtn.setOnAction(PrintGradeData);
+
+        // average grade course
+        EventHandler<ActionEvent> PrintAvgCourseGradeData = e-> HandlePrintGradeSData(view.selectStudentComB.getValue(),
+                view.selectCourseComb.getValue(),view.poodleText);
+        view.GradeStudentBtn.setOnAction(PrintAvgCourseGradeData);
 
     }
 
-    public void HandlePrintStudentData(String student, String course, TextArea poodleText){
+    public void HandlePrintStudentData(String student, String city, TextArea poodleText){
         poodleText.clear();
         poodleText.appendText("Student: \n");
         model.preparedStmtQuery();
         // Convert the grade to float here. Maybe calculate the the avg here
-        ArrayList<StudentModel.studentEnrollment> Data = model.FindStudentData(student, course, poodleText);
+        ArrayList<StudentModel.studentEnrollment> Data = model.FindStudentData(student, city, poodleText);
 
         // poodleText.appendText(String.valueOf(Data.size()));
 
         for (int i = 0; i < Data.size(); i++)
         {
-            poodleText.appendText(Data.get(i).studentName + " " + Data.get(i).courseName + "\n");
+            poodleText.appendText("Student: " + Data.get(i).studentName + " - City: " + Data.get(i).city + " - Course: " + Data.get(i).courseName + "\n");
         }
     }
     public void HandlePrintCourseData(String teacher, String studentName, TextArea poodleText){
@@ -88,7 +88,7 @@ public class Controller {
 
         for (int i = 0; i < Data.size(); i++)
         {
-            poodleText.appendText(Data.get(i).studentName + " " + Data.get(i).courseName + " " + Data.get(i).teacher + "\n");
+            poodleText.appendText("Student: " +Data.get(i).studentName + " - Course: " + Data.get(i).courseName + " - Teacher: " + Data.get(i).teacher + "\n");
         }
     }
     public void HandlePrintGradeSData(String value, String studentName, TextArea poodleText){
@@ -102,7 +102,21 @@ public class Controller {
 
         for (int i = 0; i < Data.size(); i++)
         {
-            poodleText.appendText(Data.get(i).studentName + " " + Data.get(i).courseName + " Grade: " + Data.get(i).grade + "\n");
+            poodleText.appendText("Student: " + Data.get(i).studentName + " - Course: " + Data.get(i).courseName + " - Grade: " + Data.get(i).grade + "\n");
+        }
+    }
+    public void HandlePrintAvgCourseGradeSData(String courseName, float avgGrade, TextArea poodleText){
+        poodleText.clear();
+        poodleText.appendText("Average grade for course: \n");
+        model.preparedStmtQuery();
+        // Convert the grade to float here. Maybe calculate the the avg here
+        ArrayList<StudentModel.avgCourseGrade> Data = model.FindAvgCourseGrade(courseName, poodleText);
+
+        // poodleText.appendText(String.valueOf(Data.size()));
+
+        for (int i = 0; i < Data.size(); i++)
+        {
+            poodleText.appendText(Data.get(i).courseName + " " + Data.get(i).avgGrade);
         }
     }
 }
