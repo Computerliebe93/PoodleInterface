@@ -102,7 +102,7 @@ public class Controller {
 
         for (int i = 0; i < Data.size(); i++)
         {
-            poodleText.appendText(Data.get(i).studentName + " " + Data.get(i).grade + "\n");
+            poodleText.appendText(Data.get(i).studentName + " " + Data.get(i).courseName + " Grade: " + Data.get(i).grade + "\n");
         }
     }
 }
