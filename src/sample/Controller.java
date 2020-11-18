@@ -45,14 +45,21 @@ public class Controller {
 
     public void setView(StudentView view){
         this.view = view;
-        view.exitBtn.setOnAction(e-> Platform.exit());
+        view.exitBtn.setOnAction( e-> Platform.exit());
+        // Student select
         EventHandler<ActionEvent> PrintStudentData = e-> HandlePrintStudentData(view.selectStudentComB.getValue(),
                 view.selectCourseComb.getValue(), view.poodleText);
         view.findStudentBtn.setOnAction(PrintStudentData);
 
+        // Course select
         EventHandler<ActionEvent> PrintCourseData = e-> HandlePrintCourseData(view.selectStudentComB.getValue(),
                 view.selectCourseComb.getValue(), view.poodleText);
          view.findCourseBtn.setOnAction(PrintCourseData);
+
+         // Grade select student
+        EventHandler<ActionEvent> PrintGradeData = e-> HandlePrintGradeSData(view.selectStudentComB.getValue(),
+                view.selectCourseComb.getValue(),view.poodleText);
+        view.avgGradeStudentBtn.setOnAction(PrintGradeData);
 
     }
 
@@ -82,6 +89,20 @@ public class Controller {
         for (int i = 0; i < Data.size(); i++)
         {
             poodleText.appendText(Data.get(i).studentName + " " + Data.get(i).courseName + " " + Data.get(i).teacher + "\n");
+        }
+    }
+    public void HandlePrintGradeSData(String value, String studentName, TextArea poodleText){
+        poodleText.clear();
+        poodleText.appendText("Grade: \n");
+        model.preparedStmtQuery();
+        // Convert the grade to float here. Maybe calculate the the avg here
+        ArrayList<StudentModel.studentGrade> Data = model.FindStudentGrade(studentName, poodleText);
+
+        // poodleText.appendText(String.valueOf(Data.size()));
+
+        for (int i = 0; i < Data.size(); i++)
+        {
+            poodleText.appendText(Data.get(i).studentName + " " + Data.get(i).grade + "\n");
         }
     }
 }

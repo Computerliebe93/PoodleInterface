@@ -16,7 +16,7 @@ public class Main extends Application {
         controller.setView(view);
 
         primaryStage.setTitle("Poodle STD");
-        primaryStage.setScene(new Scene(view.asParent(), 600, 475));
+        primaryStage.setScene(new Scene(view.asParent(), 700, 400));
         primaryStage.show();
     }
 

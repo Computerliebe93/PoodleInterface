@@ -12,6 +12,7 @@ public class StudentModel {
     Statement stmt = null;
     PreparedStatement pstmt = null;
     PreparedStatement pstmt2 = null;
+    PreparedStatement pstmt3 = null;
 
     String url;
 
@@ -73,14 +74,16 @@ public class StudentModel {
                   " JOIN Exams ON course.CourseName = Exams.CourseName1 " +
                     " WHERE course.CourseName = ? ;";
 
+        String sqlGrade = " SELECT Exams.CourseName1, StudentName, Grade FROM Exams " +
+                " JOIN course ON course.CourseName = Exams.CourseName1 " +
+                " WHERE course.CourseName = ? ;";
 
 
-                /* " SELECT course.CourseName, Teacher FROM course ;" +
-                            " JOIN EXAMS as D2 ON course.CourseName1 = D2.Grade " +
-                            " WHERE course.CourseName = ?; "; */
+
             try {
                 pstmt = conn.prepareStatement(sql);
                 pstmt2 = conn.prepareStatement(sqlCourse);
+                pstmt3 = conn.prepareStatement(sqlGrade);
             } catch (SQLException e) {
                 e.printStackTrace();
                 System.out.println(e.getMessage());
@@ -122,7 +125,6 @@ public class StudentModel {
         }
     }
 
-
     public ArrayList<courseData> FindCourseData(String courseName, String course, TextArea poodleText){
         ArrayList<courseData> courseData = new ArrayList<courseData>();
         try {
@@ -155,6 +157,41 @@ public class StudentModel {
             this.courseName = courseName;
             this.teacher = teacher;
             this.studentName = studentName;
+
+        }
+    }
+    public ArrayList<studentGrade> FindStudentGrade(String name, TextArea poodleText){
+        ArrayList<studentGrade> gradeData = new ArrayList<studentGrade>();
+        try {
+            pstmt3.setString(1, name);
+            // pstmt.setString(2, course);
+            //pstmt.setString(3, exam);
+            //pstmt.setInt(4, grade);
+            ResultSet rs = null;
+            rs = pstmt3.executeQuery();
+
+            while (rs !=null && rs.next()) {
+                System.out.println(rs.getString(1) + rs.getString(2));
+                studentGrade pull = new studentGrade(rs.getString(1), rs.getString(2), rs.getInt(3));
+                gradeData.add(pull);
+
+            }
+
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return gradeData;
+    }
+
+    static class studentGrade {
+        String studentName;
+        String courseName;
+        Integer grade;
+
+        public studentGrade(String studentName, String courseName, Integer grade) {
+            this.studentName = studentName;
+            this.courseName = courseName;
+            this.grade = grade;
 
         }
     }
