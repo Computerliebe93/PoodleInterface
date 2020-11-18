@@ -149,10 +149,12 @@ public class StudentModel {
     static class courseData {
         String courseName;
         String teacher;
+        String studentName;
 
         public courseData(String courseName, String teacher, String studentName) {
             this.courseName = courseName;
             this.teacher = teacher;
+            this.studentName = studentName;
 
         }
     }

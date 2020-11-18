@@ -70,18 +70,18 @@ public class Controller {
             poodleText.appendText(Data.get(i).studentName + " " + Data.get(i).courseName + "\n");
         }
     }
-    public void HandlePrintCourseData(String courseName, String teacher, TextArea poodleText){
+    public void HandlePrintCourseData(String teacher, String studentName, TextArea poodleText){
         poodleText.clear();
         poodleText.appendText("Course: \n");
         model.preparedStmtQuery();
         // Convert the grade to float here. Maybe calculate the the avg here
-        ArrayList<StudentModel.courseData> Data = model.FindCourseData(courseName, teacher, poodleText);
+        ArrayList<StudentModel.courseData> Data = model.FindCourseData(teacher, studentName, poodleText);
 
         // poodleText.appendText(String.valueOf(Data.size()));
 
         for (int i = 0; i < Data.size(); i++)
         {
-            poodleText.appendText(Data.get(i).courseName + " " + Data.get(i).teacher + "\n");
+            poodleText.appendText(Data.get(i).studentName + " " + Data.get(i).courseName + " " + Data.get(i).teacher + "\n");
         }
     }
 }
