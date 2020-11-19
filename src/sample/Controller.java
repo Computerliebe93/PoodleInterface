@@ -1,10 +1,8 @@
 package sample;
 
-
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -38,7 +36,7 @@ public class Controller {
         return courseNames;
     }
 
-
+    // Event handler that handles the press of a button
     public void setView(StudentView view){
         this.view = view;
         view.exitBtn.setOnAction( e-> Platform.exit());
@@ -55,35 +53,32 @@ public class Controller {
          // Grade select student
         EventHandler<ActionEvent> PrintGradeData = e-> HandlePrintGradeSData(view.selectStudentComB.getValue(),
                 view.selectCourseComb.getValue(),view.poodleText);
-        view.GradeStudentBtn.setOnAction(PrintGradeData);
+        view.gradeStudentBtn.setOnAction(PrintGradeData);
 
     }
 
-    public void HandlePrintStudentData(String course, String city, TextArea poodleText){
+    // Print student data handler + average grade
+    public void HandlePrintStudentData(String name, String city, TextArea poodleText){
         poodleText.clear();
-        poodleText.appendText("Student: \n");
         model.preparedStmtQuery();
-        // Convert the grade to float here. Maybe calculate the the avg here
-        ArrayList<StudentModel.studentEnrollment> Data = model.FindStudentData(course, city, poodleText);
-        Float avgStudentGrade = model.FindAvgStudentGrade(course);
+        ArrayList<StudentModel.studentEnrollment> Data = model.FindStudentData(name, city, poodleText);
+        Float avgStudentGrade = model.FindAvgStudentGrade(name);
 
-        // poodleText.appendText(String.valueOf(Data.size()));
 
         for (int i = 0; i < Data.size(); i++)
         {
-            poodleText.appendText("Student: " + Data.get(i).studentName + " - City: " + Data.get(i).city + " - Course: " + Data.get(i).courseName + "\n");
+            poodleText.appendText("Student: " + Data.get(i).studentName + " - City: " + Data.get(i).city + "\n");
         }
         poodleText.appendText("Average grade: " + avgStudentGrade);
     }
+
+    // Print Course data handler + average grade
     public void HandlePrintCourseData(String studentName, String  course, TextArea poodleText){
         poodleText.clear();
-        poodleText.appendText("Course: \n");
         model.preparedStmtQuery();
-        // Convert the grade to float here. Maybe calculate the the avg here
         ArrayList<StudentModel.courseData> Data = model.FindCourseData(studentName, course, poodleText);
         Float avgGrade = model.FindAvgCourseGrade(course);
 
-        // poodleText.appendText(String.valueOf(Data.size()));
 
         for (int i = 0; i < Data.size(); i++)
         {
@@ -91,33 +86,17 @@ public class Controller {
         }
         poodleText.appendText("Average grade: " + avgGrade);
     }
+
+    // Print grades handler
     public void HandlePrintGradeSData(String value, String studentName, TextArea poodleText){
         poodleText.clear();
-        poodleText.appendText("Grade: \n");
         model.preparedStmtQuery();
-        // Convert the grade to float here. Maybe calculate the the avg here
         ArrayList<StudentModel.studentGrade> Data = model.FindStudentGrade(studentName, poodleText);
-
-        // poodleText.appendText(String.valueOf(Data.size()));
 
         for (int i = 0; i < Data.size(); i++)
         {
             poodleText.appendText("Student: " + Data.get(i).studentName + " - Course: " + Data.get(i).courseName + " - Grade: " + Data.get(i).grade + "\n");
         }
     }
-/*    public void HandlePrintAvgCourseGradeSData(String course, TextArea poodleText){
-        poodleText.clear();
-        poodleText.appendText("Grade: \n");
-        model.preparedStmtQuery();
-        // Convert the grade to float here. Maybe calculate the the avg here
-        ArrayList<StudentModel.avgCourseGrade> Data = model.FindAvgCourseGrade(course);
-
-        // poodleText.appendText(String.valueOf(Data.size()));
-
-        for (int i = 0; i < Data.size(); i++)
-        {
-            poodleText.appendText("Grade: " + (Data.get(i).avgGrade) + "\n");
-        }
-    } */
 }
 

@@ -1,8 +1,6 @@
 package sample;
 
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
-
 import java.sql.*;
 import java.util.ArrayList;
 import static java.sql.DriverManager.getConnection;
@@ -31,6 +29,7 @@ public class StudentModel {
         this.stmt = conn.createStatement();
     }
 
+    // prepared statement for student label
     public ArrayList<String> studentNameQuerystmt() {
         ArrayList<String> studentNames = new ArrayList<String>();
         String sql = "SELECT StudentName FROM students ;";
@@ -47,7 +46,7 @@ public class StudentModel {
         }
         return studentNames;
     }
-
+    // Prepared statement SQL for course label
     public ArrayList<String> courseNameQuerystmt() {
         ArrayList<String> courseNames = new ArrayList<String>();
         String sql = "SELECT CourseName FROM course ;";
@@ -65,13 +64,11 @@ public class StudentModel {
         return courseNames;
     }
 
-
+    // Prepared statements SQL
     public void preparedStmtQuery() {
-        String sql = " SELECT Students.StudentName, City ,Courses FROM Students " +
-                 " JOIN Exams as D2 ON Students.StudentName = D2.StudentName " +
+        String sql = " SELECT Students.StudentName, City FROM Students " +
+                 " JOIN Exams as D2 ON Students.StudentName = D2.StudentName  " +
                 " WHERE Students.StudentName = ?; ";
-
-
 
         String sqlCourse = " SELECT course.CourseName, Teacher, studentName FROM course " +
                   " JOIN Exams ON course.CourseName = Exams.CourseName1 " +
@@ -82,7 +79,6 @@ public class StudentModel {
                 " WHERE course.CourseName = ? ;";
 
         String sqlAvgCourseGrade = " SELECT AVG(Grade)  FROM Exams " +
-               // " JOIN course ON course.CourseName = Exams.CourseName1 " +
                 " WHERE Exams.CourseName1 = ? ;";
 
         String sqlAvgStudentGrade = " SELECT AVG(Grade)  FROM Exams " +
@@ -102,6 +98,7 @@ public class StudentModel {
             }
         }
 
+        // Find stundent method
     public ArrayList<studentEnrollment> FindStudentData(String name, String city, TextArea poodleText){
         ArrayList<studentEnrollment> studentData = new ArrayList<studentEnrollment>();
         try {
@@ -110,8 +107,7 @@ public class StudentModel {
                  rs = pstmt.executeQuery();
 
             while (rs !=null && rs.next()) {
-                System.out.println(rs.getString(1) + rs.getString(2));
-                studentEnrollment pull = new studentEnrollment(rs.getString(1), rs.getString(2), rs.getString(3));
+                studentEnrollment pull = new studentEnrollment(rs.getString(1), rs.getString(2));
                 studentData.add(pull);
 
             }
@@ -125,16 +121,15 @@ public class StudentModel {
     static class studentEnrollment {
         String studentName;
         String city;
-        String courseName;
 
-        public studentEnrollment(String studentName, String city, String courseName) {
+        public studentEnrollment(String studentName, String city) {
             this.studentName = studentName;
             this.city = city;
-            this.courseName = courseName;
 
         }
     }
 
+    // Find course method
     public ArrayList<courseData> FindCourseData(String courseName, String course, TextArea poodleText){
         ArrayList<courseData> courseData = new ArrayList<courseData>();
         try {
@@ -143,7 +138,6 @@ public class StudentModel {
             rs = pstmt2.executeQuery();
 
             while (rs !=null && rs.next()) {
-                System.out.println(rs.getString(1) + rs.getString(2));
                 courseData pull = new courseData(rs.getString(1), rs.getString(2), rs.getString(3));
                 courseData.add(pull);
             }
@@ -166,6 +160,8 @@ public class StudentModel {
 
         }
     }
+
+    // Find student grade method
     public ArrayList<studentGrade> FindStudentGrade(String name, TextArea poodleText){
         ArrayList<studentGrade> gradeData = new ArrayList<studentGrade>();
         try {
@@ -174,7 +170,6 @@ public class StudentModel {
             rs = pstmt3.executeQuery();
 
             while (rs !=null && rs.next()) {
-                System.out.println(rs.getString(1) + rs.getString(2));
                 studentGrade pull = new studentGrade(rs.getString(1), rs.getString(2), rs.getInt(3));
                 gradeData.add(pull);
 
@@ -198,27 +193,16 @@ public class StudentModel {
 
         }
     }
+
+    // Find average grade for course and student method
     public Float FindAvgCourseGrade(String course){
-        Float avgGrade = null;
-        try {
-            pstmt4.setString(1, (course));
-            ResultSet rs = null;
-            rs = pstmt4.executeQuery();
-
-            while (rs !=null && rs.next()) {
-                System.out.println(rs.getFloat(1));
-               // System.out.println(rs.getString(1) + rs.getFloat(2));
-                // avgCourseGrade pull = new avgCourseGrade(rs.getFloat(1));
-                avgGrade = (rs.getFloat(1));
-            }
-
-        }catch (SQLException e) {
-            e.printStackTrace();
-        }
-        System.out.println(avgGrade);
-        return avgGrade;
+        return getaFloat(course, pstmt4);
     }
     public Float FindAvgStudentGrade(String course){
+        return getaFloat(course, pstmt5);
+    }
+
+    private Float getaFloat(String course, PreparedStatement pstmt5) {
         Float avgStudentGrade = null;
         try {
             pstmt5.setString(1, (course));
@@ -227,8 +211,6 @@ public class StudentModel {
 
             while (rs !=null && rs.next()) {
                 System.out.println(rs.getFloat(1));
-                // System.out.println(rs.getString(1) + rs.getFloat(2));
-                // avgCourseGrade pull = new avgCourseGrade(rs.getFloat(1));
                 avgStudentGrade = (rs.getFloat(1));
             }
 
