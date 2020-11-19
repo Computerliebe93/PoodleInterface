@@ -4,6 +4,7 @@ package sample;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -56,19 +57,15 @@ public class Controller {
                 view.selectCourseComb.getValue(),view.poodleText);
         view.GradeStudentBtn.setOnAction(PrintGradeData);
 
-        // average grade course
-        EventHandler<ActionEvent> PrintAvgCourseGradeData = e-> HandlePrintGradeSData(view.selectStudentComB.getValue(),
-                view.selectCourseComb.getValue(),view.poodleText);
-        view.GradeStudentBtn.setOnAction(PrintAvgCourseGradeData);
-
     }
 
-    public void HandlePrintStudentData(String student, String city, TextArea poodleText){
+    public void HandlePrintStudentData(String course, String city, TextArea poodleText){
         poodleText.clear();
         poodleText.appendText("Student: \n");
         model.preparedStmtQuery();
         // Convert the grade to float here. Maybe calculate the the avg here
-        ArrayList<StudentModel.studentEnrollment> Data = model.FindStudentData(student, city, poodleText);
+        ArrayList<StudentModel.studentEnrollment> Data = model.FindStudentData(course, city, poodleText);
+        Float avgStudentGrade = model.FindAvgStudentGrade(course);
 
         // poodleText.appendText(String.valueOf(Data.size()));
 
@@ -76,13 +73,15 @@ public class Controller {
         {
             poodleText.appendText("Student: " + Data.get(i).studentName + " - City: " + Data.get(i).city + " - Course: " + Data.get(i).courseName + "\n");
         }
+        poodleText.appendText("Average grade: " + avgStudentGrade);
     }
-    public void HandlePrintCourseData(String teacher, String studentName, TextArea poodleText){
+    public void HandlePrintCourseData(String studentName, String  course, TextArea poodleText){
         poodleText.clear();
         poodleText.appendText("Course: \n");
         model.preparedStmtQuery();
         // Convert the grade to float here. Maybe calculate the the avg here
-        ArrayList<StudentModel.courseData> Data = model.FindCourseData(teacher, studentName, poodleText);
+        ArrayList<StudentModel.courseData> Data = model.FindCourseData(studentName, course, poodleText);
+        Float avgGrade = model.FindAvgCourseGrade(course);
 
         // poodleText.appendText(String.valueOf(Data.size()));
 
@@ -90,6 +89,7 @@ public class Controller {
         {
             poodleText.appendText("Student: " +Data.get(i).studentName + " - Course: " + Data.get(i).courseName + " - Teacher: " + Data.get(i).teacher + "\n");
         }
+        poodleText.appendText("Average grade: " + avgGrade);
     }
     public void HandlePrintGradeSData(String value, String studentName, TextArea poodleText){
         poodleText.clear();
@@ -105,19 +105,19 @@ public class Controller {
             poodleText.appendText("Student: " + Data.get(i).studentName + " - Course: " + Data.get(i).courseName + " - Grade: " + Data.get(i).grade + "\n");
         }
     }
-    public void HandlePrintAvgCourseGradeSData(String courseName, float avgGrade, TextArea poodleText){
+/*    public void HandlePrintAvgCourseGradeSData(String course, TextArea poodleText){
         poodleText.clear();
-        poodleText.appendText("Average grade for course: \n");
+        poodleText.appendText("Grade: \n");
         model.preparedStmtQuery();
         // Convert the grade to float here. Maybe calculate the the avg here
-        ArrayList<StudentModel.avgCourseGrade> Data = model.FindAvgCourseGrade(courseName, poodleText);
+        ArrayList<StudentModel.avgCourseGrade> Data = model.FindAvgCourseGrade(course);
 
         // poodleText.appendText(String.valueOf(Data.size()));
 
         for (int i = 0; i < Data.size(); i++)
         {
-            poodleText.appendText(Data.get(i).courseName + " " + Data.get(i).avgGrade);
+            poodleText.appendText("Grade: " + (Data.get(i).avgGrade) + "\n");
         }
-    }
+    } */
 }
 

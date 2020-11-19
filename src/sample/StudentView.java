@@ -22,7 +22,6 @@ public class StudentView {
     Button avgGradeCourseBtn = new Button("Average grade course");
     Button exitBtn = new Button("Exit");
 
-
     TextArea poodleText = new TextArea();
 
     ComboBox<String> selectStudentComB = new ComboBox();

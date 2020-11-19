@@ -1,5 +1,6 @@
 package sample;
 
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 
 import java.sql.*;
@@ -14,7 +15,7 @@ public class StudentModel {
     PreparedStatement pstmt2 = null;
     PreparedStatement pstmt3 = null;
     PreparedStatement pstmt4 = null;
-
+    PreparedStatement pstmt5 = null;
 
     String url;
 
@@ -80,9 +81,12 @@ public class StudentModel {
                 " JOIN course ON course.CourseName = Exams.CourseName1 " +
                 " WHERE course.CourseName = ? ;";
 
-        String sqlAvgCourseGrade = " SELECT Exams.StudentName, CourseName1, avg(Grade) FROM Exams " +
-                " JOIN course ON course.CourseName = Exams.CourseName1 " +
-                " WHERE course.CourseName = ? ;";
+        String sqlAvgCourseGrade = " SELECT AVG(Grade)  FROM Exams " +
+               // " JOIN course ON course.CourseName = Exams.CourseName1 " +
+                " WHERE Exams.CourseName1 = ? ;";
+
+        String sqlAvgStudentGrade = " SELECT AVG(Grade)  FROM Exams " +
+                " WHERE Exams.StudentName = ? ;";
 
 
             try {
@@ -90,6 +94,7 @@ public class StudentModel {
                 pstmt2 = conn.prepareStatement(sqlCourse);
                 pstmt3 = conn.prepareStatement(sqlGrade);
                 pstmt4 = conn.prepareStatement(sqlAvgCourseGrade);
+                pstmt5 = conn.prepareStatement(sqlAvgStudentGrade);
             } catch (SQLException e) {
                 e.printStackTrace();
                 System.out.println(e.getMessage());
@@ -98,7 +103,7 @@ public class StudentModel {
         }
 
     public ArrayList<studentEnrollment> FindStudentData(String name, String city, TextArea poodleText){
-        ArrayList<studentEnrollment> studentdata = new ArrayList<studentEnrollment>();
+        ArrayList<studentEnrollment> studentData = new ArrayList<studentEnrollment>();
         try {
             pstmt.setString(1, name);
             ResultSet rs = null;
@@ -107,14 +112,14 @@ public class StudentModel {
             while (rs !=null && rs.next()) {
                 System.out.println(rs.getString(1) + rs.getString(2));
                 studentEnrollment pull = new studentEnrollment(rs.getString(1), rs.getString(2), rs.getString(3));
-                studentdata.add(pull);
+                studentData.add(pull);
 
             }
 
         }catch (SQLException e) {
             e.printStackTrace();
         }
-    return studentdata;
+    return studentData;
 }
 
     static class studentEnrollment {
@@ -141,7 +146,6 @@ public class StudentModel {
                 System.out.println(rs.getString(1) + rs.getString(2));
                 courseData pull = new courseData(rs.getString(1), rs.getString(2), rs.getString(3));
                 courseData.add(pull);
-
             }
 
         }catch (SQLException e) {
@@ -194,35 +198,45 @@ public class StudentModel {
 
         }
     }
-    public ArrayList<avgCourseGrade> FindAvgCourseGrade(String name, TextArea poodleText){
-        ArrayList<avgCourseGrade> avgCourseData = new ArrayList<avgCourseGrade>();
+    public Float FindAvgCourseGrade(String course){
+        Float avgGrade = null;
         try {
-            pstmt4.setString(1, name);
+            pstmt4.setString(1, (course));
             ResultSet rs = null;
             rs = pstmt4.executeQuery();
 
             while (rs !=null && rs.next()) {
-                System.out.println(rs.getString(1) + rs.getString(2));
-                avgCourseGrade pull = new avgCourseGrade(rs.getString(1), rs.getFloat(2));
-                avgCourseData.add(pull);
-
+                System.out.println(rs.getFloat(1));
+               // System.out.println(rs.getString(1) + rs.getFloat(2));
+                // avgCourseGrade pull = new avgCourseGrade(rs.getFloat(1));
+                avgGrade = (rs.getFloat(1));
             }
 
         }catch (SQLException e) {
             e.printStackTrace();
         }
-        return avgCourseData;
+        System.out.println(avgGrade);
+        return avgGrade;
     }
+    public Float FindAvgStudentGrade(String course){
+        Float avgStudentGrade = null;
+        try {
+            pstmt5.setString(1, (course));
+            ResultSet rs = null;
+            rs = pstmt5.executeQuery();
 
-    static class avgCourseGrade {
-        String courseName;
-        float avgGrade;
+            while (rs !=null && rs.next()) {
+                System.out.println(rs.getFloat(1));
+                // System.out.println(rs.getString(1) + rs.getFloat(2));
+                // avgCourseGrade pull = new avgCourseGrade(rs.getFloat(1));
+                avgStudentGrade = (rs.getFloat(1));
+            }
 
-        public avgCourseGrade(String courseName, float avgGrade) {
-            this.courseName = courseName;
-            this.avgGrade = avgGrade;
-
+        }catch (SQLException e) {
+            e.printStackTrace();
         }
+        System.out.println(avgStudentGrade);
+        return avgStudentGrade;
     }
 }
 
